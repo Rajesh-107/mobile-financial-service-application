@@ -10,7 +10,7 @@ router.put("/:userId", userController.singleUserDataUpdate);
 
 router.put("/:userId/orders", userController.addProductToOrder);
 router.get("/:userId/orders", userController.getAllOrdersForUser);
-app.get(
+router.get(
   "/:userId/orders/total-price",
   userController.calculateTotalPriceForUser
 );
