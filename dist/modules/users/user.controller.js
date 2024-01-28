@@ -141,11 +141,66 @@ const addProductToOrder = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
 });
+const getAllOrdersForUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = req.params.userId;
+        const user = yield user_service_1.userDetailsService.getSingleUserFromDB(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+        const orders = user.orders || [];
+        res.status(200).json({
+            success: true,
+            message: "Orders retrieved successfully",
+            data: orders,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+});
+const calculateTotalPriceForUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = req.params.userId;
+        const totalPrice = yield user_service_1.userDetailsService.calculateTotalPriceForUser(userId);
+        res.status(200).json({
+            success: true,
+            message: "Total price calculated successfully!",
+            data: {
+                totalPrice: totalPrice,
+            },
+        });
+    }
+    catch (error) {
+        if (error.message === "User not found") {
+            res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+        else {
+            res.status(500).json({
+                success: false,
+                message: "Internal Server Error",
+                error: error.message,
+            });
+        }
+    }
+});
 exports.userController = {
     createStudent,
     getAllUsers,
     getSingleUser,
     deleteSingleUser,
     singleUserDataUpdate,
-    addProductToOrder, // Add this line to expose the new function
+    addProductToOrder,
+    getAllOrdersForUser,
+    calculateTotalPriceForUser,
 };

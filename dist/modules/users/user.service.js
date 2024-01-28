@@ -39,19 +39,29 @@ const addProductToOrder = (userId, orderData) => __awaiter(void 0, void 0, void 
         if (!existingUser) {
             throw new Error("User not found");
         }
-        // Check if the 'orders' property exists, if not, create it
         if (!existingUser.orders) {
             existingUser.orders = [];
         }
-        // Append the new product to the 'orders' array
         existingUser.orders.push({
             productName: orderData.productName,
             price: orderData.price,
             quantity: orderData.quantity,
         });
-        // Save the updated user data
         const updatedUser = yield existingUser.save();
         return updatedUser;
+    }
+    catch (error) {
+        throw error;
+    }
+});
+const calculateTotalPriceForUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const existingUser = yield user_model_1.UserDetailModel.findOne({ userId });
+        if (!existingUser) {
+            throw new Error("User not found");
+        }
+        const totalPrice = existingUser.calculateTotalPrice();
+        return totalPrice;
     }
     catch (error) {
         throw error;
@@ -64,4 +74,5 @@ exports.userDetailsService = {
     deleteSingleUserFromDB,
     updateSingleUserInDB,
     addProductToOrder,
+    calculateTotalPriceForUser,
 };

@@ -144,11 +144,69 @@ const addProductToOrder = async (req: Request, res: Response) => {
   }
 };
 
+const getAllOrdersForUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const user = await userDetailsService.getSingleUserFromDB(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const orders = user.orders || [];
+    res.status(200).json({
+      success: true,
+      message: "Orders retrieved successfully",
+      data: orders,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+const calculateTotalPriceForUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+
+    const totalPrice = await userDetailsService.calculateTotalPriceForUser(
+      userId
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Total price calculated successfully!",
+      data: {
+        totalPrice: totalPrice,
+      },
+    });
+  } catch (error: any) {
+    if (error.message === "User not found") {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        error: error.message,
+      });
+    }
+  }
+};
 export const userController = {
   createStudent,
   getAllUsers,
   getSingleUser,
   deleteSingleUser,
   singleUserDataUpdate,
-  addProductToOrder, // Add this line to expose the new function
+  addProductToOrder,
+  getAllOrdersForUser,
+  calculateTotalPriceForUser,
 };
