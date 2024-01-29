@@ -81,22 +81,4 @@ userSchema.statics.addProductToOrder = function (userId, orderData) {
         return user.save();
     });
 };
-userSchema.statics.calculateTotalPrice = function (userId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const user = yield this.findOne({ userId });
-            if (!user) {
-                throw new Error("User not found");
-            }
-            if (!user.orders || user.orders.length === 0) {
-                return 0;
-            }
-            const totalPrice = user.orders.reduce((acc, order) => acc + order.price * order.quantity, 0);
-            return totalPrice;
-        }
-        catch (error) {
-            throw error;
-        }
-    });
-};
 exports.UserDetailModel = (0, mongoose_1.model)("userDetails", userSchema);

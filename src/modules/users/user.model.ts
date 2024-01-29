@@ -81,26 +81,4 @@ userSchema.statics.addProductToOrder = async function (
   return user.save();
 };
 
-userSchema.statics.calculateTotalPrice = async function (userId: number) {
-  try {
-    const user = await this.findOne({ userId });
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    if (!user.orders || user.orders.length === 0) {
-      return 0;
-    }
-
-    const totalPrice = user.orders.reduce(
-      (acc, order) => acc + order.price * order.quantity,
-      0
-    );
-    return totalPrice;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const UserDetailModel = model<userDetails>("userDetails", userSchema);

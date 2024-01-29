@@ -34,39 +34,33 @@ const updateSingleUserInDB = (userId, updatedData) => __awaiter(void 0, void 0, 
     return result;
 });
 const addProductToOrder = (userId, orderData) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const existingUser = yield user_model_1.UserDetailModel.findOne({ userId });
-        if (!existingUser) {
-            throw new Error("User not found");
-        }
-        if (!existingUser.orders) {
-            existingUser.orders = [];
-        }
-        existingUser.orders.push({
-            productName: orderData.productName,
-            price: orderData.price,
-            quantity: orderData.quantity,
-        });
-        const updatedUser = yield existingUser.save();
-        return updatedUser;
+    const existingUser = yield user_model_1.UserDetailModel.findOne({ userId });
+    if (!existingUser) {
+        throw new Error("User not found");
     }
-    catch (error) {
-        throw error;
+    if (!existingUser.orders) {
+        existingUser.orders = [];
     }
+    existingUser.orders.push({
+        productName: orderData.productName,
+        price: orderData.price,
+        quantity: orderData.quantity,
+    });
+    const updatedUser = yield existingUser.save();
+    return updatedUser;
 });
-const calculateTotalPriceForUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const existingUser = yield user_model_1.UserDetailModel.findOne({ userId });
-        if (!existingUser) {
-            throw new Error("User not found");
-        }
-        const totalPrice = existingUser.calculateTotalPrice();
-        return totalPrice;
-    }
-    catch (error) {
-        throw error;
-    }
-});
+// const calculateTotalPriceForUser = async (userId: number) => {
+//   try {
+//     const existingUser = await UserDetailModel.findOne({ userId });
+//     if (!existingUser) {
+//       throw new Error("User not found");
+//     }
+//     const totalPrice = existingUser.calculateTotalPrice();
+//     return totalPrice;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 exports.userDetailsService = {
     createUserIntoDb,
     getAllUserFromDb,
@@ -74,5 +68,4 @@ exports.userDetailsService = {
     deleteSingleUserFromDB,
     updateSingleUserInDB,
     addProductToOrder,
-    calculateTotalPriceForUser,
 };
