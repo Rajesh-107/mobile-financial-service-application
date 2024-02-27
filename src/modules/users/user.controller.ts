@@ -24,7 +24,10 @@ const createStudent = async (req: Request, res: Response) => {
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const result = await userDetailsService.getAllUserFromDb(); // Added parentheses to call the function
+    const userId: any = req.params.userId;
+
+    const result = await userDetailsService.getAllUserFromDb(userId);
+
     res.status(200).json({
       success: true,
       message: "Users found successfully",
@@ -41,7 +44,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 const getSingleUser = async (req: Request, res: Response) => {
   try {
-    const UserId = req.params.userId;
+    const UserId: any = req.params.userId;
 
     const result = await userDetailsService.getSingleUserFromDB(UserId);
     res.status(200).json({
@@ -60,7 +63,7 @@ const getSingleUser = async (req: Request, res: Response) => {
 
 const deleteSingleUser = async (req: Request, res: Response) => {
   try {
-    const userId = req.params.userId;
+    const userId: any = req.params.userId;
 
     const result = await userDetailsService.deleteSingleUserFromDB(userId);
     res.status(200).json({
@@ -87,13 +90,12 @@ const deleteSingleUser = async (req: Request, res: Response) => {
 
 const singleUserDataUpdate = async (req: Request, res: Response) => {
   try {
-    const UserId = req.params.userId;
+    const userId: any = req.params.userId;
     const updatedData = req.body;
 
-    const existingStudent = await userDetailsService.getSingleUserFromDB(
-      UserId
-    );
-    if (!existingStudent || existingStudent.length === 0) {
+    const existingUser = await userDetailsService.getSingleUserFromDB(userId);
+
+    if (!existingUser) {
       return res.status(404).json({
         success: false,
         message: "User not found",
@@ -101,7 +103,7 @@ const singleUserDataUpdate = async (req: Request, res: Response) => {
     }
 
     const result = await userDetailsService.updateSingleUserInDB(
-      UserId,
+      userId,
       updatedData
     );
 
@@ -110,7 +112,7 @@ const singleUserDataUpdate = async (req: Request, res: Response) => {
       message: "Single User data updated successfully",
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
@@ -121,7 +123,7 @@ const singleUserDataUpdate = async (req: Request, res: Response) => {
 
 const addProductToOrder = async (req: Request, res: Response) => {
   try {
-    const userId = req.params.userId;
+    const userId: any = req.params.userId;
     const { productName, price, quantity } = req.body;
 
     const updatedUser = await userDetailsService.addProductToOrder(userId, {
@@ -146,7 +148,7 @@ const addProductToOrder = async (req: Request, res: Response) => {
 
 const getAllOrdersForUser = async (req: Request, res: Response) => {
   try {
-    const userId = req.params.userId;
+    const userId: any = req.params.userId;
     const user = await userDetailsService.getSingleUserFromDB(userId);
 
     if (!user) {
@@ -170,36 +172,36 @@ const getAllOrdersForUser = async (req: Request, res: Response) => {
     });
   }
 };
-const calculateTotalPriceForUser = async (req: Request, res: Response) => {
-  try {
-    const userId = req.params.userId;
+// const calculateTotalPriceForUser = async (req: Request, res: Response) => {
+//   try {
+//     const userId:any = req.params.userId;
 
-    const totalPrice = await userDetailsService.calculateTotalPriceForUser(
-      userId
-    );
+//     const totalPrice = await userDetailsService.calculateTotalPriceForUser(
+//       userId
+//     );
 
-    res.status(200).json({
-      success: true,
-      message: "Total price calculated successfully!",
-      data: {
-        totalPrice: totalPrice,
-      },
-    });
-  } catch (error: any) {
-    if (error.message === "User not found") {
-      res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    } else {
-      res.status(500).json({
-        success: false,
-        message: "Internal Server Error",
-        error: error.message,
-      });
-    }
-  }
-};
+//     res.status(200).json({
+//       success: true,
+//       message: "Total price calculated successfully!",
+//       data: {
+//         totalPrice: totalPrice,
+//       },
+//     });
+//   } catch (error: any) {
+//     if (error.message === "User not found") {
+//       res.status(404).json({
+//         success: false,
+//         message: "User not found",
+//       });
+//     } else {
+//       res.status(500).json({
+//         success: false,
+//         message: "Internal Server Error",
+//         error: error.message,
+//       });
+//     }
+//   }
+// };
 export const userController = {
   createStudent,
   getAllUsers,
@@ -208,5 +210,4 @@ export const userController = {
   singleUserDataUpdate,
   addProductToOrder,
   getAllOrdersForUser,
-  calculateTotalPriceForUser,
 };

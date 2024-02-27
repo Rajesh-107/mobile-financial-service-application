@@ -68,7 +68,7 @@ userSchema.post("save", function (doc, next) {
 
 userSchema.statics.addProductToOrder = async function (
   userId: number,
-  orderData: userDetails["orders"][0]
+  orderData: userDetails["orders"][]
 ) {
   const user = await this.findOne({ userId });
   if (!user) {
